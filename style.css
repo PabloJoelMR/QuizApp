@@ -1,0 +1,49 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 50px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+}
+
+#frageContainer {
+    display: none;
+    margin-top: 50px;
+}
+
+#frage {
+    margin-bottom: 20px;
+}
+
+#antworten {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#antworten button {
+    margin-bottom: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+}
+
+#ergebnisContainer {
+    display: none;
+    margin-top: 50px;
+}
+
+#ergebnis {
+    margin-bottom: 20px;
+}
+
+#naechsteFrageButton {
+    padding: 10px 20px;
+    font-size: 18px;
+}

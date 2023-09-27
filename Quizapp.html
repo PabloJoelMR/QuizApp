@@ -233,22 +233,16 @@ function checkAnswer() {
             alert(`Leider falsch.. Die richtige Antwort ist ${correctAnswer}`)
             
 
-            // Finde die richtige Antwort und färbe sie in Grün
-            const correctListItem = Array.from(choicesList.children).find((choiceListItem) => {
-                return choiceListItem.querySelector("input").value === correctAnswer;
-            });
-
-            if (correctListItem) {
-                correctListItem.style.color = "green"; // Richtige Antwort in Grün anzeigen
-            }
+          
         }
 
         if (currentQuestion + 1 < questions.length) {
             nextButton.textContent = "Nächste Frage";
         } else {
-            nextButton.textContent = "Ergebnisse anzeigen"
-            ;
+            nextButton.textContent = "Ergebnisse anzeigen";
+            
         }
+        document.getElementById("currentScore").textContent = score;
     }
 }
 // ...

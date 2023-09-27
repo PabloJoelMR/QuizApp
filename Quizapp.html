@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizspiel</title>
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.quiz-container {
+    display: block;
+}
+
+.result-container {
+    display: none;
+}
+
+.choices {
+    list-style-type: none;
+    padding: 0;
+}
+
+.choices li {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.choices input[type="radio"] {
+    margin-right: 10px;
+}
+
+.choices li:hover {
+    background-color: #f0f0f0;
+}
+
+/* Stil für das Feedback in Rot und Grün */
+.quiz-container .choices li {
+    transition: color 0.3s;
+}
+
+.quiz-container .choices li.correct {
+    color: green;
+}
+
+.quiz-container .choices li.wrong {
+    color: red;
+}
+
+/* Stil für die Nachricht am Ende */
+.result-container .message {
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+
+
+</style>
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-container">
+            <h1>Quizfrage <span id="questionNumber"></span></h1>
+            <p id="question"></p>
+            <ul class="choices">
+                <li><input type="radio" name="answer" value="1"> <label for="choice-1">Antwort 1</label></li>
+                <li><input type="radio" name="answer" value="2"> <label for="choice-2">Antwort 2</label></li>
+                <li><input type="radio" name="answer" value="3"> <label for="choice-3">Antwort 3</label></li>
+            </ul>
+            <button id="nextButton">Nächste Frage</button>
+        </div>
+        <div class="result-container">
+            <h2>Ergebnisse</h2>
+            <p id="score">Punktzahl: <span id="scoreNumber"></span></p>
+            <p class="message"></p>
+            <button id="restartButton">Neu starten</button>
+        </div>
+    </div>
+    
+</body>
+</html>
+
+
+<script>
+
+const questions = [
+    {
+        question: "Was ist die Hauptstadt von Frankreich?",
+        choices: ["Paris", "London", "Berlin"],
+        correctAnswer: "Paris"
+    },
+    {
+        question: "Welcher Planet ist der dritte in unserem Sonnensystem?",
+        choices: ["Venus", "Erde", "Mars"],
+        correctAnswer: "Erde"
+    },
+    {
+        question: "Welche Farbe hat eine reife Banane?",
+        choices: ["Rot", "Grün", "Gelb"],
+        correctAnswer: "Gelb"
+    },
+    {
+        question: 'Welche Farbe hat der Himmel?',
+        choices: ['Blau', 'Grün', 'Rot', 'Gelb'],
+        correctAnswer: 'Blau'
+      },
+      {
+        question: 'Wie schreibt man den Postboten ohne das O?',
+        choices: [ 'Postler','Zusteller','Briefträger','Pöstler'],
+        correctAnswer: 'Briefträger'
+     },
+     {
+        question: 'Welche Frucht hat keinen Mut?',
+        choices: ['Melone','Birne', 'Feige','Apfel'],
+        correctAnswer: 'Feige'
+     }
+
+    
+];
+
+let currentQuestion = 0;
+let score = 0;
+let quizComplete = false;
+
+const quizContainer = document.querySelector(".quiz-container");
+const resultContainer = document.querySelector(".result-container");
+const scoreDisplay = document.getElementById("score");
+const nextButton = document.getElementById("nextButton");
+const restartButton = document.getElementById("restartButton");
+
+function displayQuestion() {
+    if (currentQuestion < questions.length) {
+        const questionData = questions[currentQuestion];
+        quizContainer.querySelector("h1").textContent = `Frage ${currentQuestion + 1}`;
+        quizContainer.querySelector("p").textContent = questionData.question;
+        const choicesList = quizContainer.querySelector(".choices");
+        choicesList.innerHTML = "";
+        questionData.choices.forEach((choice, index) => {
+            const listItem = document.createElement("li");
+            const radioInput = document.createElement("input");
+            radioInput.type = "radio";
+            radioInput.name = `q${currentQuestion}`;
+            radioInput.value = choice;
+            radioInput.id = `q${currentQuestion}-choice-${index}`;
+            const label = document.createElement("label");
+            label.textContent = choice;
+            label.setAttribute("for", `q${currentQuestion}-choice-${index}`);
+            listItem.appendChild(radioInput);
+            listItem.appendChild(label);
+            choicesList.appendChild(listItem);
+        });
+    } else {
+        // Alle Fragen beantwortet
+        quizComplete = true;
+        quizContainer.style.display = "none";
+        resultContainer.style.display = "block";
+        scoreDisplay.textContent = `Punktzahl: ${score}/${questions.length}`;
+        const message = score >= questions.length / 2 ? "Gut gemacht!" : "Weiter üben!";
+        resultContainer.querySelector(".message").textContent = message;
+    }
+}
+
+// ...
+function checkAnswer() {
+    if (quizComplete) return; // Wenn das Quiz abgeschlossen ist, wird nichts mehr überprüft
+
+    const selectedAnswer = document.querySelector(`input[name="q${currentQuestion}"]:checked`);
+    if (selectedAnswer) {
+        const userAnswer = selectedAnswer.value;
+        const correctAnswer = questions[currentQuestion].correctAnswer;
+        const choicesList = quizContainer.querySelector(".choices");
+
+        if (userAnswer === correctAnswer) {
+            score++;
+            // Richtig beantwortet
+            alert("Richtig!")
+            
+        } else {
+            // Falsch beantwortet
+            alert(`Leider falsch.. Die richtige Antowrt ist ${correctAnswer}`)
+            
+
+            // Finde die richtige Antwort und färbe sie in Grün
+            const correctListItem = Array.from(choicesList.children).find((choiceListItem) => {
+                return choiceListItem.querySelector("input").value === correctAnswer;
+            });
+
+            if (correctListItem) {
+                correctListItem.style.color = "green"; // Richtige Antwort in Grün anzeigen
+            }
+        }
+
+        if (currentQuestion + 1 < questions.length) {
+            nextButton.textContent = "Nächste Frage";
+        } else {
+            nextButton.textContent = "Ergebnisse anzeigen";
+        }
+    }
+}
+// ...
+
+
+nextButton.addEventListener("click", () => {
+    checkAnswer();
+    currentQuestion++;
+    displayQuestion();
+});
+
+restartButton.addEventListener("click", () => {
+    // Starte das Quiz neu
+    currentQuestion = 0;
+    score = 0;
+    quizComplete = false;
+    quizContainer.style.display = "block";
+    resultContainer.style.display = "none";
+    displayQuestion();
+});
+
+// Starte das Quiz
+displayQuestion();
+</script>

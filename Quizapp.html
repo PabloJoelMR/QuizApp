@@ -115,6 +115,10 @@ button:hover {
             </ul>
             <button id="nextButton">Nächste Frage</button>
         </div>
+        <div>
+            <h2>Punkte: <span id="currentScore"></span></h2>
+            <p></p>
+        </div>
         <div class="result-container">
             <h2>Ergebnisse</h2>
             <p id="score">Punktzahl: <span id="scoreNumber"></span></p>
@@ -173,12 +177,14 @@ const resultContainer = document.querySelector(".result-container");
 const scoreDisplay = document.getElementById("score");
 const nextButton = document.getElementById("nextButton");
 const restartButton = document.getElementById("restartButton");
+const currentScore = document.getElementById("currentScore")
 
 function displayQuestion() {
     if (currentQuestion < questions.length) {
         const questionData = questions[currentQuestion];
         quizContainer.querySelector("h1").textContent = `Frage ${currentQuestion + 1}`;
         quizContainer.querySelector("p").textContent = questionData.question;
+        currentScore.textContent = `${score}`
         const choicesList = quizContainer.querySelector(".choices");
         choicesList.innerHTML = "";
         questionData.choices.forEach((choice, index) => {
@@ -220,10 +226,11 @@ function checkAnswer() {
             score++;
             // Richtig beantwortet
             alert("Richtig!")
+
             
         } else {
             // Falsch beantwortet
-            alert(`Leider falsch.. Die richtige Antowrt ist ${correctAnswer}`)
+            alert(`Leider falsch.. Die richtige Antwort ist ${correctAnswer}`)
             
 
             // Finde die richtige Antwort und färbe sie in Grün
@@ -239,7 +246,8 @@ function checkAnswer() {
         if (currentQuestion + 1 < questions.length) {
             nextButton.textContent = "Nächste Frage";
         } else {
-            nextButton.textContent = "Ergebnisse anzeigen";
+            nextButton.textContent = "Ergebnisse anzeigen"
+            ;
         }
     }
 }
